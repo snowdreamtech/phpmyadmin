@@ -42,6 +42,10 @@ if [ -n "${PMA_PASS}" ]; then
     echo "\$cfg['Servers'][\$i]['password'] = '${PMA_PASS}';" >>${PHPMYADMIN_CONFIG_PATH}
 fi
 
+# BLOWFISH_SECRET  
+BLOWFISH_SECRET=$(openssl rand -hex 16)
+sed -i "s/\$cfg\['blowfish_secret'\] = '';/\$cfg['blowfish_secret'] = '${BLOWFISH_SECRET}';/g" ${PHPMYADMIN_CONFIG_PATH}
+
 # Storage database and tables  
 sed -i "s/\/\/ \$cfg\['Servers'\]\[\$i\]\['pmadb'\] = 'phpmyadmin';/\$cfg['Servers'][\$i]['pmadb'] = 'phpmyadmin';/g" ${PHPMYADMIN_CONFIG_PATH}
 
