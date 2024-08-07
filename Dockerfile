@@ -12,6 +12,8 @@ ENV PMA_ARBITRARY=0 \
 
 RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/v3.17/community phpmyadmin=5.2.1-r0
 
+EXPOSE 80
+
 COPY docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
