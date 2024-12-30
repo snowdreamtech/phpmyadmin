@@ -13,7 +13,10 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/base"
 
 # keep the docker container running
-ENV KEEPALIVE=1
+ENV KEEPALIVE=1 \
+    # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
+    # which are port numbers less than 1024. 
+    CAP_NET_BIND_SERVICE=0 
 
 ARG GID=1000 \
     UID=1000  \
@@ -25,6 +28,12 @@ RUN if [ "${USER}" != "root" ]; then \
     addgroup -g ${GID} ${USER}; \
     adduser -h /home/${USER} -u ${UID} -g ${USER} -G ${USER} -s /bin/sh -D ${USER}; \
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
+    fi
+
+# Enable CAP_NET_BIND_SERVICE
+RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
+    apk add --no-cache libcap; \
+    # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     fi
 
 RUN apk add --no-cache \

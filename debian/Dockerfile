@@ -13,7 +13,10 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/base"
 
 # keep the docker container running
-ENV KEEPALIVE=1
+ENV KEEPALIVE=1 \
+    # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
+    # which are port numbers less than 1024. 
+    CAP_NET_BIND_SERVICE=0
 
 ARG GID=1000 \
     UID=1000  \
@@ -22,10 +25,23 @@ ARG GID=1000 \
 
 # Create a user with UID and GID
 RUN set -eux \
-    &&if [ "${USER}" != "root" ]; then \
+    && if [ "${USER}" != "root" ]; then \
     addgroup --gid ${GID} ${USER}; \
     adduser --home /home/${USER} --uid ${UID} --gid ${GID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
+    fi \
+    && apt-get -qqy --purge autoremove \
+    && apt-get -qqy clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/* \
+    && rm -rf /var/tmp/* 
+
+# Enable CAP_NET_BIND_SERVICE
+RUN set -eux \
+    && if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
+    apt-get -qqy update; \
+    apt-get -qqy install --no-install-recommends libcap2-bin; \
+    # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     fi \
     && apt-get -qqy --purge autoremove \
     && apt-get -qqy clean \
