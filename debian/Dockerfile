@@ -24,7 +24,7 @@ ENV KEEPALIVE=1 \
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0
 
-ENV PMA_VERSION="4:5.2.1+dfsg-1" \
+ENV PMA_VERSION="5.2.1" \
     PMA_ARBITRARY=0 \
     PMA_AUTH_TYPE="cookie" \
     PMA_HOST="localhost" \
@@ -67,13 +67,13 @@ RUN set -eux \
 
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
-    phpmyadmin=${PMA_VERSION} \
-    && mv /usr/share/phpmyadmin/* /usr/share/nginx/html \
-    && mv /var/lib/phpmyadmin/* /usr/share/nginx/html \
-    && mv /etc/phpmyadmin/* /usr/share/nginx/html \
-    && mv /usr/share/doc/phpmyadmin/html  /usr/share/nginx/html/docs/ \
+    && wget https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && unzip phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && mv phpMyAdmin-${PMA_VERSION}-all-languages/* /usr/share/nginx/html \
+    && cp /usr/share/nginx/html/config.sample.inc.php /usr/share/nginx/html/config.inc.php \
     && chown -Rv nginx:nginx /usr/share/nginx/html \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages.zip \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \

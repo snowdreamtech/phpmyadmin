@@ -24,7 +24,7 @@ ENV KEEPALIVE=1 \
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0 
 
-ENV PMA_VERSION="5.2.1-r2" \
+ENV PMA_VERSION="5.2.1" \
     PMA_ARBITRARY=0 \
     PMA_AUTH_TYPE="cookie" \
     PMA_HOST="localhost" \
@@ -52,10 +52,13 @@ RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
     fi
 
-RUN apk add --no-cache \
-    phpmyadmin=${PMA_VERSION} \
-    && mv /usr/share/webapps/phpmyadmin/* /var/lib/nginx/html \
-    && chown -Rv nginx:nginx /var/lib/nginx/html
+RUN wget https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && unzip phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && mv phpMyAdmin-${PMA_VERSION}-all-languages/* /var/lib/nginx/html \
+    && cp /var/lib/nginx/html/config.sample.inc.php /var/lib/nginx/html/config.inc.php \
+    && chown -Rv nginx:nginx /var/lib/nginx/html \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages.zip 
 
 # Switch to the user
 USER nginx
