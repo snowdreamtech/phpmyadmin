@@ -1,4 +1,4 @@
-FROM snowdreamtech/alpine:3.21.0
+FROM snowdreamtech/php:8.4.2-fpm-alpine3.21
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -9,9 +9,9 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="3.21.0" \
+    org.opencontainers.image.version="5.2.1" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
-    
+
 # Switch to the user
 USER root
 
@@ -23,6 +23,16 @@ ENV KEEPALIVE=1 \
     # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0 
+
+ENV PMA_VERSION="5.2.1-r2" \
+    PMA_ARBITRARY=0 \
+    PMA_AUTH_TYPE="cookie" \
+    PMA_HOST="localhost" \
+    PMA_VERBOSE="localhost" \
+    PMA_PORT=3306 \
+    PMA_USER="root" \
+    PMA_PASS="" \
+    PHPMYADMIN_CONFIG_PATH=/var/lib/nginx/html/config.inc.php
 
 ARG GID=1000 \
     UID=1000  \
@@ -43,13 +53,15 @@ RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
     fi
 
 RUN apk add --no-cache \
-    vim
+    phpmyadmin=${PMA_VERSION} \
+    && mv /usr/share/webapps/phpmyadmin/* /var/lib/nginx/html \
+    && chown -Rv nginx:nginx /var/lib/nginx/html
 
 # Switch to the user
-USER ${USER}
+USER nginx
 
 # Set the workdir
-WORKDIR ${WORKDIR}
+WORKDIR /var/lib/nginx/html
 
 COPY docker-entrypoint.sh /usr/local/bin/
 
