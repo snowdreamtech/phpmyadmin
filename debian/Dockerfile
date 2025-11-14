@@ -72,8 +72,6 @@ RUN if [ "${USER}" != "root" ]; then \
 #     # setcap 'cap_net_bind_service=+ep' `which nginx`; \
 #     fi
 
-COPY vimrc.local /etc/vim/vimrc.local
-
 COPY entrypoint.d /usr/local/bin/entrypoint.d
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
