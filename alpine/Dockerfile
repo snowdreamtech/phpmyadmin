@@ -48,15 +48,16 @@ ENV KEEPALIVE=${KEEPALIVE} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
-RUN apk add --no-cache \
-    vim
-
 # Create a user with PUID and PGID
 RUN if [ "${USER}" != "root" ]; then \
     addgroup -g ${PGID} ${USER}; \
     adduser -h /home/${USER} -u ${PUID} -g ${USER} -G ${USER} -s /bin/sh -D ${USER}; \
     # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
     fi
+
+RUN apk update \
+    && apk add --no-cache \
+    vim
 
 # Enable CAP_NET_BIND_SERVICE
 # RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \

@@ -50,6 +50,13 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
+# Create a user with PUID and PGID
+RUN if [ "${USER}" != "root" ]; then \
+    addgroup --gid ${PGID} ${USER}; \
+    adduser --home /home/${USER} --uid ${PUID} --gid ${PGID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
+    # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
+    fi
+    
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
@@ -59,13 +66,6 @@ RUN set -eux \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* \
     && rm -rf /var/tmp/*
-
-# Create a user with PUID and PGID
-RUN if [ "${USER}" != "root" ]; then \
-    addgroup --gid ${PGID} ${USER}; \
-    adduser --home /home/${USER} --uid ${PUID} --gid ${PGID} --gecos ${USER} --shell /bin/bash --disabled-password ${USER}; \
-    # sed -i "/%sudo/c ${USER} ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers; \
-    fi
 
 # Enable CAP_NET_BIND_SERVICE
 # RUN if [ "${USER}" != "root" ] && [ "${CAP_NET_BIND_SERVICE}" -eq 1 ]; then \
