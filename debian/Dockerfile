@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.vendor="Snowdream Tech" \
-    org.opencontainers.image.version="5.2.2" \
+    org.opencontainers.image.version="5.2.3" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
 
 # Switch to the user
@@ -50,7 +50,7 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
-ENV PMA_VERSION="5.2.2" \
+ENV PMA_VERSION="5.2.3" \
     PMA_ARBITRARY=0 \
     PMA_AUTH_TYPE="cookie" \
     PMA_HOST="db" \
