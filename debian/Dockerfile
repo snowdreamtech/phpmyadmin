@@ -1,4 +1,4 @@
-FROM snowdreamtech/debian:13.1.0
+FROM snowdreamtech/php:8.4.11-fpm-trixie
 
 # OCI annotations to image
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
@@ -20,7 +20,7 @@ WORKDIR /root
 
 # keep the docker container running
 ARG DEBIAN_FRONTEND=noninteractive \
-    KEEPALIVE=0 \
+    KEEPALIVE=1 \
     # The cap_net_bind_service capability in Linux allows a process to bind a socket to Internet domain privileged ports, 
     # which are port numbers less than 1024. 
     CAP_NET_BIND_SERVICE=0 \
@@ -75,7 +75,7 @@ RUN set -eux \
     && rm -rfv /usr/share/nginx/html/* \
     && mv phpMyAdmin-${PMA_VERSION}-all-languages/* /usr/share/nginx/html \
     && cp /usr/share/nginx/html/config.sample.inc.php /usr/share/nginx/html/config.inc.php \
-    && chown -Rv nginx:nginx /usr/share/nginx/html \
+    # && chown -Rv nginx:nginx /usr/share/nginx/html \
     && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages \
     && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages.zip \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
