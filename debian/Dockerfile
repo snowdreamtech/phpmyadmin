@@ -50,6 +50,16 @@ ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
     USER=${USER} \
     WORKDIR=${WORKDIR} 
 
+ENV PMA_VERSION="5.2.1" \
+    PMA_ARBITRARY=0 \
+    PMA_AUTH_TYPE="cookie" \
+    PMA_HOST="db" \
+    PMA_VERBOSE="MySQL/MariaDB server" \
+    PMA_PORT=3306 \
+    PMA_USER="root" \
+    PMA_PASS="" \
+    PHPMYADMIN_CONFIG_PATH=/usr/share/nginx/html/config.inc.php
+
 # Create a user with PUID and PGID
 RUN if [ "${USER}" != "root" ] && [ ! -d "/home/${USER}" ] && [ "${PUID}" -ne 0 ] && [ "${PGID}" -ne 0 ]; then \
     addgroup --gid ${PGID} ${USER}; \
@@ -59,8 +69,15 @@ RUN if [ "${USER}" != "root" ] && [ ! -d "/home/${USER}" ] && [ "${PUID}" -ne 0 
     
 RUN set -eux \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy update  \
-    && DEBIAN_FRONTEND=noninteractive apt-get -qqy install --no-install-recommends \ 
-    vim \
+    && cd /root \
+    && wget https://files.phpmyadmin.net/phpMyAdmin/${PMA_VERSION}/phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && unzip phpMyAdmin-${PMA_VERSION}-all-languages.zip \
+    && rm -rfv /usr/share/nginx/html/* \
+    && mv phpMyAdmin-${PMA_VERSION}-all-languages/* /usr/share/nginx/html \
+    && cp /usr/share/nginx/html/config.sample.inc.php /usr/share/nginx/html/config.inc.php \
+    && chown -Rv nginx:nginx /usr/share/nginx/html \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages \
+    && rm -rfv phpMyAdmin-${PMA_VERSION}-all-languages.zip \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy --purge autoremove \
     && DEBIAN_FRONTEND=noninteractive apt-get -qqy clean \
     && rm -rf /var/lib/apt/lists/* \
