@@ -6,60 +6,57 @@ if [ "$DEBUG" = "true" ]; then echo "→ [phpMyAdmin] Setting up configuration";
 : "${PHPMYADMIN_CONFIG_PATH:=/var/www/html/config.inc.php}"
 
 if [ ! -f "${PHPMYADMIN_CONFIG_PATH}" ]; then
-    if [ -f "/var/www/html/config.sample.inc.php" ]; then
-        cp "/var/www/html/config.sample.inc.php" "${PHPMYADMIN_CONFIG_PATH}"
-    else
-        touch "${PHPMYADMIN_CONFIG_PATH}"
-    fi
+  if [ -f "/var/www/html/config.sample.inc.php" ]; then
+    cp "/var/www/html/config.sample.inc.php" "${PHPMYADMIN_CONFIG_PATH}"
+  else
+    touch "${PHPMYADMIN_CONFIG_PATH}"
+  fi
 fi
-
-
-
 
 # Modifying configuration file config.inc.php
 # https://github.com/phpmyadmin/docker/blob/master/config.inc.php
 if [ "$PMA_ARBITRARY" = "1" ]; then
-    sed -i "/\$cfg['AllowArbitraryServer']\s*=\s*.+/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['AllowArbitraryServer'] = true;" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg['AllowArbitraryServer']\s*=\s*.+/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['AllowArbitraryServer'] = true;" >>"${PHPMYADMIN_CONFIG_PATH}"
 else
-    sed -i "/\$cfg['AllowArbitraryServer']\s*=\s*.+/d" "${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg['AllowArbitraryServer']\s*=\s*.+/d" "${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_AUTH_TYPE}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['auth_type'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['auth_type'] = '${PMA_AUTH_TYPE}';" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['auth_type'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['auth_type'] = '${PMA_AUTH_TYPE}';" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_HOST}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['host'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['host'] = '${PMA_HOST}';" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['host'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['host'] = '${PMA_HOST}';" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_VERBOSE}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['verbose'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['verbose'] = '${PMA_VERBOSE}';" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['verbose'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['verbose'] = '${PMA_VERBOSE}';" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_PORT}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['port'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['port'] = ${PMA_PORT};" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['port'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['port'] = ${PMA_PORT};" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_USER}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['user'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['user'] = '${PMA_USER}';" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['user'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['user'] = '${PMA_USER}';" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
 if [ -n "${PMA_PASS}" ]; then
-    sed -i "/\$cfg\['Servers'\]\[\$i\]\['password'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
-    echo "\$cfg['Servers'][\$i]['password'] = '${PMA_PASS}';" >>"${PHPMYADMIN_CONFIG_PATH}"
+  sed -i "/\$cfg\['Servers'\]\[\$i\]\['password'\]/d" "${PHPMYADMIN_CONFIG_PATH}"
+  echo "\$cfg['Servers'][\$i]['password'] = '${PMA_PASS}';" >>"${PHPMYADMIN_CONFIG_PATH}"
 fi
 
-# BLOWFISH_SECRET  
+# BLOWFISH_SECRET
 BLOWFISH_SECRET=$(openssl rand -hex 16)
 sed -i "s/\$cfg\['blowfish_secret'\] = '';/\$cfg['blowfish_secret'] = '${BLOWFISH_SECRET}';/g" "${PHPMYADMIN_CONFIG_PATH}"
 
-# Storage database and tables  
+# Storage database and tables
 sed -i "s/\/\/ \$cfg\['Servers'\]\[\$i\]\['pmadb'\] = 'phpmyadmin';/\$cfg['Servers'][\$i]['pmadb'] = 'phpmyadmin';/g" "${PHPMYADMIN_CONFIG_PATH}"
 
 sed -i "s/\/\/ \$cfg\['Servers'\]\[\$i\]\['bookmarktable'\] = 'pma__bookmark';/\$cfg['Servers'][\$i]['bookmarktable'] = 'pma__bookmark';/g" "${PHPMYADMIN_CONFIG_PATH}"
@@ -100,5 +97,4 @@ sed -i "s/\/\/ \$cfg\['Servers'\]\[\$i\]\['designer_settings'\] = 'pma__designer
 
 sed -i "s/\/\/ \$cfg\['Servers'\]\[\$i\]\['export_templates'\] = 'pma__export_templates';/\$cfg['Servers'][\$i]['export_templates'] = 'pma__export_templates';/g" "${PHPMYADMIN_CONFIG_PATH}"
 
-
-if [ "$DEBUG" = "true" ]; then echo "→ [phpMyAdmin] Done."; fi    
+if [ "$DEBUG" = "true" ]; then echo "→ [phpMyAdmin] Done."; fi
