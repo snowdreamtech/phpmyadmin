@@ -21,7 +21,7 @@ ARG BUILDTIME \
     PHPMYADMIN_PATH=/var/www/html
 
 # x-release-please-start-version
-ARG PHPMYADMIN_VERSION=5.2.1
+ARG PHPMYADMIN_VERSION=5.2.3
 # x-release-please-end
 
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
 
 # x-release-please-start-version
-LABEL org.opencontainers.image.version="${VERSION:-5.2.1}"
+LABEL org.opencontainers.image.version="${VERSION:-5.2.3}"
 # x-release-please-end
 
 # Runtime Environment Configuration

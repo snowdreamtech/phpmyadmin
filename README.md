@@ -43,7 +43,7 @@ docker run -d \
   snowdreamtech/phpmyadmin:debian
 ```
 
-**Supported Architectures**: i386, amd64, arm32v5, arm32v7, arm64, mips64le, ppc64le, s390x
+**Supported Architectures**: i386, amd64, arm32v5, arm32v7, arm64, riscv64, ppc64le, s390x
 
 **Base Image**: `snowdreamtech/debian:13.5.0`
 
@@ -75,7 +75,7 @@ docker run -d \
   snowdreamtech/phpmyadmin:rocky
 ```
 
-**Supported Architectures**: i386, amd64, arm32v5, arm32v7, arm64, mips64le, ppc64le, s390x
+**Supported Architectures**: amd64, arm64, ppc64le, s390x
 
 **Base Image**: `snowdreamtech/rocky:10.2.0`
 
