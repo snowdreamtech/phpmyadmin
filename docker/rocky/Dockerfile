@@ -26,12 +26,13 @@ ARG PHPMYADMIN_VERSION=5.2.3
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.title="phpMyAdmin Image Based On Rocky" \
-    org.opencontainers.image.description="Docker Images for phpMyAdmin on Rocky. (i386, amd64, arm32v5, arm32v7, arm64, mips64le, ppc64le, s390x)" \
+    org.opencontainers.image.description="Docker Images for phpMyAdmin on Rocky. (amd64, arm64, ppc64le, s390x)" \
     org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.base.name="snowdreamtech/php:8.4.21-nginx-rocky" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.vendor="Snowdream Tech" \
+    org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.created="${BUILDTIME}" \
     org.opencontainers.image.revision="${REVISION}" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
@@ -56,8 +57,8 @@ ENV KEEPALIVE=${KEEPALIVE} \
 
 # Additional tooling and configuration for phpMyAdmin
 RUN set -eux \
-    && dnf -y --allowerasing update \
-    && dnf -y --allowerasing install \
+    && dnf -y --allowerasing --setopt=*.skip_if_unavailable=true update \
+    && dnf -y --allowerasing --setopt=*.skip_if_unavailable=true install \
     vim-enhanced curl tar \
     && mkdir -p ${PHPMYADMIN_PATH} \
     && curl -fsSL "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz" -o phpMyAdmin.tar.gz \

@@ -27,12 +27,13 @@ ARG PHPMYADMIN_VERSION=5.2.3
 # Standard OCI Metadata (https://github.com/opencontainers/image-spec)
 LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.title="phpMyAdmin Image Based On Debian" \
-    org.opencontainers.image.description="Docker Images for phpMyAdmin on Debian. (i386, amd64, arm32v5, arm32v7, arm64, mips64le, ppc64le, s390x)" \
+    org.opencontainers.image.description="Docker Images for phpMyAdmin on Debian. (amd64, arm32v7, arm64, ppc64le, riscv64, s390x)" \
     org.opencontainers.image.documentation="https://hub.docker.com/r/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.base.name="snowdreamtech/php:8.4.16-nginx-debian" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.source="https://github.com/snowdreamtech/phpmyadmin" \
     org.opencontainers.image.vendor="Snowdream Tech" \
+    org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.created="${BUILDTIME}" \
     org.opencontainers.image.revision="${REVISION}" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
