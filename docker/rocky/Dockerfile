@@ -37,10 +37,6 @@ LABEL org.opencontainers.image.authors="Snowdream Tech" \
     org.opencontainers.image.revision="${REVISION}" \
     org.opencontainers.image.url="https://github.com/snowdreamtech/phpmyadmin"
 
-# x-release-please-start-version
-LABEL org.opencontainers.image.version="${VERSION:-5.2.3}"
-# x-release-please-end
-
 # Runtime Environment Configuration
 ENV KEEPALIVE=${KEEPALIVE} \
     CAP_NET_BIND_SERVICE=${CAP_NET_BIND_SERVICE} \
